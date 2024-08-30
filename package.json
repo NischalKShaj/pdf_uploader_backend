@@ -2,28 +2,21 @@
   "name": "pdfuploader_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon --exec ts-node src/infrastructure/server/server.ts",
-    "start": "node dist/infrastructure/server/server.js",
-    "build": "npm run clean && tsc",
-    "clean": "rm -rf dist"
+    "start": "nodemon app.js",
+    "dev": "nodemon app.js"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "mongoose": "^8.5.4",
+    "mongoose": "^8.6.0",
     "nodemon": "^3.1.4"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.5.1",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.5.4"
   }
 }
