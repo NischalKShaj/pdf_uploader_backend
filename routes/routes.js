@@ -11,5 +11,11 @@ const router = express.Router();
 // for getting the initial rendering
 router.get("/", userController.getHome);
 
+// router for signup
+router.post("/signup", userController.userSignup);
+
+// router for login
+router.post("/login", userController.userLogin);
+
 // exporting the router
 export default router;

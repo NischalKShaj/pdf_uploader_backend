@@ -2,14 +2,65 @@
 
 // importing the required modules
 import { userModel } from "../models/userModel.js";
+import { generateToken } from "../middleware/generateToken.js";
+import bcrypt from "bcryptjs";
 
 // creating the userController for the project
 export const userController = {
+  // controller for getting the host
   getHome: async (req, res) => {
     try {
       res.status(200).json("home page");
     } catch (error) {
       res.status(404).json("error");
+    }
+  },
+
+  // controller for signing up the user
+  userSignup: async (req, res) => {
+    try {
+      const { username, email, password } = req.body;
+      const existingUser = await userModel.findOne({ email: email });
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      const newUser = new userModel({
+        username,
+        email,
+        password: hashedPassword,
+      });
+
+      await newUser.save();
+      res.status(201).json("user signed successfully");
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+
+  // controller for user login
+  userLogin: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const user = await userModel.findOne({ email: email });
+
+      // if invalid email
+      if (!user) {
+        return res.status(400).json("user not found");
+      }
+      const matchPassword = bcrypt.compare(password, user.password);
+
+      // if invalid password
+      if (!matchPassword) {
+        return res.status(400).json("invalid password");
+      }
+      const token = generateToken(user.email);
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(202)
+        .json({ data: user, token: token });
+    } catch (error) {
+      res.status(500).json(error);
     }
   },
 };
