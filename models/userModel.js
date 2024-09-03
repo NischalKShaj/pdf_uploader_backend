@@ -17,7 +17,12 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  file: [
+  uploaded_file: [
+    {
+      type: String,
+    },
+  ],
+  new_file: [
     {
       type: String,
     },

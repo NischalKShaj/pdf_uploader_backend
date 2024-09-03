@@ -10,9 +10,16 @@ export const userController = {
   // controller for getting the host
   getHome: async (req, res) => {
     try {
-      res.status(200).json("home page");
+      const { email } = req.user;
+      const userData = await userModel.findOne(
+        { email: email },
+        { username: 1, email: 1, uploaded_file: 1, new_file: 1 }
+      );
+      console.log("inside", userData);
+      res.status(202).json({ data: userData });
     } catch (error) {
-      res.status(404).json("error");
+      console.error("error", error);
+      res.status(404).json("error", error);
     }
   },
 
@@ -59,6 +66,26 @@ export const userController = {
         .cookie("access_token", token, { httpOnly: true })
         .status(202)
         .json({ data: user, token: token });
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+
+  // controller for uploading the pdf
+  uploadPDF: async (req, res) => {
+    const id = req.params.id;
+    try {
+      const user = await userModel.findById({ _id: id });
+      if (!user) {
+        return res.status(400).json("user not found");
+      }
+
+      const uploaded_file = req.file.filename;
+
+      // appending the new file to the database of the user
+      user.uploaded_file.push(uploaded_file);
+      await user.save();
+      res.status(202).json({ data: user });
     } catch (error) {
       res.status(500).json(error);
     }
