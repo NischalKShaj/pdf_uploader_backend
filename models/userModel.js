@@ -22,11 +22,6 @@ const userSchema = new Schema({
       type: String,
     },
   ],
-  new_file: [
-    {
-      type: String,
-    },
-  ],
 });
 
 // creating the model and exporting
